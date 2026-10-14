@@ -1,9 +1,12 @@
 import duckdb
+import csv
+import logging
+from pathlib import Path
+import shutil
 from config.directory_settings import raw_directory
 from config.directory_settings import bronze_directory
 from config.directory_settings import error_directory
 from config.directory_settings import temporary_files_directory
-from pathlib import Path
 
 def raw_to_bronze():
     raw_dir = raw_directory
@@ -21,10 +24,33 @@ def raw_to_bronze():
                 file_name = csv_file.stem.replace("cia_aberta_", "")
                 converted_file = tempo_dir / f"{file_name}_utf8.csv"
 
+                # converting to utf8 because duckdb can't load latin-1
                 with open(csv_file, "r", encoding="latin-1") as source:
                     with open(converted_file, "w", encoding="utf-8") as destination:
                         for line in source:
                             destination.write(line)
 
-                data = duckdb.read_csv(converted_file, delimiter=";")
-                print(Path(converted_file).stem)
+                try:
+                    data = duckdb.read_csv(converted_file, 
+                                           delimiter=";", 
+                                           strict_mode=True, 
+                                           quotechar="")
+
+                    data.write_parquet(f"{bronze_dir}/{file_name}.parquet")
+
+                    
+                except Exception as e:
+                    error_name = type(e).__name__
+
+                    logging.exception(f"ERROR IN FILE {csv_file}")
+                    logging.exception(error_name)
+                    logging.exception(str(e))
+                    
+                    error_path = error_dir / f"{error_name}"
+                    error_path.mkdir(parents=True, exist_ok=True)
+
+                    shutil.copy2(csv_file, error_path)
+                    continue
+                
+
+raw_to_bronze()
