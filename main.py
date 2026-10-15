@@ -1,10 +1,8 @@
-from config.directory_settings import set_directories
 from datetime import datetime
 import logging as lg
 from src.extract.web_scraper import web_scraper
 from src.extract.raw_to_bronze import raw_to_bronze
 from config.directory_settings import log_directory
-
 
 if __name__ == "__main__":
 
@@ -21,6 +19,5 @@ if __name__ == "__main__":
 
     web_scraper_link = "https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/"
 
-    set_directories()
     web_scraper(web_scraper_link)
     raw_to_bronze()
