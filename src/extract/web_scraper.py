@@ -8,6 +8,7 @@ from config.directory_settings import raw_directory
 
 def web_scraper(website_url):
     raw_dir = raw_directory
+    raw_dir.mkdir(parents=True, exist_ok=True)
     url = website_url
     response = requests.get(url)
     response.raise_for_status()

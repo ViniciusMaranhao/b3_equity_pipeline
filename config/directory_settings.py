@@ -16,29 +16,3 @@ gold_directory = data_warehouse_directory / "gold"
 
 #logs
 log_directory = project_root / "logs"
-
-def set_directories():
-    raw_dir = raw_directory
-    raw_dir.mkdir(parents=True, exist_ok=True)
-
-    bronze_dir = bronze_directory
-    bronze_dir.mkdir(parents=True, exist_ok= True)
-
-    silver_dir = silver_directory
-    silver_dir.mkdir(parents=True, exist_ok= True)
-
-    error_dir = error_directory
-    error_dir.mkdir(parents=True, exist_ok= True)
-
-    tempo_dir = temporary_files_directory
-    tempo_dir.mkdir(parents=True, exist_ok=True)
-
-    log_dir = log_directory
-    log_dir.mkdir(parents=True, exist_ok= True)
-
-    warehouse_dir = data_warehouse_directory
-    warehouse_dir.mkdir(parents=True, exist_ok=True)
-
-    gold_dir = gold_directory
-    gold_dir.mkdir(parents=True, exist_ok=True)
-
