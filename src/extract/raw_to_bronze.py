@@ -1,5 +1,4 @@
 import duckdb
-import csv
 import logging
 from pathlib import Path
 import shutil
@@ -76,5 +75,3 @@ def raw_to_bronze():
             logging.info(f"sub-folder{date_dir} done.")
         logging.info(f"folder {dataset_dir} done.")
                 
-
-raw_to_bronze()
