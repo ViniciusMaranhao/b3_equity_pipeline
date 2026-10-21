@@ -1,9 +1,11 @@
+from pathlib import Path
 from datetime import datetime
 import logging as lg
 
 from src.extract.web_scraper import web_scraper
 from src.extract.raw_to_bronze import raw_to_bronze
-from src.analysis.bronze_eda import bronze_eda
+
+from src.analysis import bronze_meta_data_eda
 
 from config.directory_settings import log_directory
 from config.directory_settings import bronze_directory
@@ -24,12 +26,10 @@ if __name__ == "__main__":
     )
 
     web_scraper(web_scraper_link)
+    
     raw_to_bronze()
     
-    for folder in bronze_dir.iterdir():
-        if not folder.is_dir():
+    for topic in bronze_directory.iterdir():
+        if not topic.is_dir():
             continue
-        for subfolder in folder.iterdir():
-            if not subfolder.is_dir():
-                continue
-            bronze_eda(subfolder)
+        bronze_meta_data_eda(Path(topic))
