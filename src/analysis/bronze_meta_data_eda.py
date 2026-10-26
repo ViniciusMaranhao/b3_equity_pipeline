@@ -1,11 +1,13 @@
 import duckdb
 import pandas as pd
 from pathlib import Path
+import csv
 from config.directory_settings import reports_directory
 
 def bronze_meta_data_eda(folder_path: Path):
         reports_dir = reports_directory
         topic_name = folder_path.name
+        general_columns_list = []
 
         for subtopic_folder in folder_path.iterdir():
             if not subtopic_folder.is_dir():
@@ -17,6 +19,12 @@ def bronze_meta_data_eda(folder_path: Path):
             subtopic_db = duckdb.read_parquet(file_path,
                                             union_by_name=True)
             duckdb.register('subtopic db', subtopic_db)
+            subtopic_db_columns = subtopic_db.columns
+
+            if not general_columns_list:
+                 general_columns_list = subtopic_db_columns
+            else:
+                 general_columns_list = [x for x in general_columns_list if x in subtopic_db_columns]
 
             # 2. Total Rows & Columns Count
             total_rows = duckdb.sql("SELECT COUNT(*) FROM subtopic_db").fetchone()[0]
@@ -119,3 +127,11 @@ def bronze_meta_data_eda(folder_path: Path):
 
             with open(f"{report_path}/{subtopic_name}_report.html", "w", encoding="utf-8") as f:
                 f.write(html_report)
+
+        general_columns_path = Path(f"{reports_dir}/bronze_reports/{topic_name}_reports")
+        general_columns_path.mkdir(parents=True, exist_ok=True)
+        
+        with open (f"{general_columns_path}/{topic_name}_1general_columns.csv", "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f, delimiter=';')
+
+                writer.writerow(general_columns_list)
