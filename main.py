@@ -5,7 +5,7 @@ import logging as lg
 from src.extract.web_scraper import web_scraper
 from src.extract.raw_to_bronze import raw_to_bronze
 
-from src.analysis import bronze_meta_data_eda
+from src.analysis.bronze_meta_data_eda import bronze_meta_data_eda
 
 from config.directory_settings import log_directory
 from config.directory_settings import bronze_directory
